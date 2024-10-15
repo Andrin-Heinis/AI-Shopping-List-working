@@ -5,7 +5,7 @@
 
 ## 1. Repository klonen
 
-1. Öffne **GitHub** mit diesem Link: https://gitlab.liip.ch/andrin.heinis/ai-shopping-list.
+1. Öffne **GitHub** mit diesem Link: https://github.com/Andrin-Heinis/AI-Shopping-List.
 2. Klicke auf den grünen **Code**-Button und wähle **SSH**.
 3. Kopiere die SSH-URL des Repositories.
 4. Öffne **Visual Studio Code** auf deinem Computer.
