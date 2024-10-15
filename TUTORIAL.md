@@ -5,13 +5,14 @@
 
 ## 1. Repository klonen
 
-1. Öffne **GitHub** mit diesem Link: https://github.com/Andrin-Heinis/AI-Shopping-List.
+1. Öffne **GitHub** mit diesem Link: https://gitlab.liip.ch/andrin.heinis/ai-shopping-list.
 2. Klicke auf den grünen **Code**-Button und wähle **SSH**.
 3. Kopiere die SSH-URL des Repositories.
 4. Öffne **Visual Studio Code** auf deinem Computer.
 5. Öffne das **Terminal**:
-   - Klicke auf **Terminal** → **Neues Terminal** oder benutze den Shortcut `Strg + ö` (Windows) bzw. `Cmd + ^` (Mac).
+   - Klicke auf **Terminal** → **Neues Terminal** oder benutze den Shortcut `Strg + ö` (Windows) bzw. `Cmd ⌘ + ^` (Mac).
 6. Gib im Terminal folgenden Befehl ein, um das Repository zu klonen:
+
    ```bash
    git clone [LINK]
    ```
@@ -23,6 +24,7 @@
 ## 2. Projekt in Visual Studio Code öffnen
 
 1. Gehe im Terminal in den geklonten Ordner, indem du folgenden Befehl eingibst:
+
    ```bash
    cd AI-Shopping-List
    ```
@@ -46,6 +48,7 @@
 
 1. Öffne die Datei `index.html` in Visual Studio Code.
 2. Finde den Abschnitt mit der Liste der Einkäufe, der so aussieht:
+
    ```html
    <ul>
        <li>
@@ -60,6 +63,7 @@
    </ul>
    ```
 3. Füge unter dem letzten `<li>`-Tag einen neuen Artikel hinzu, z.B. "Tomaten":
+
    ```html
    <li>
        <span class="item-name">Tomaten</span>
@@ -76,6 +80,7 @@
 
 1. Öffne die Datei `style.css` in Visual Studio Code.
 2. Finde den Abschnitt, der den `body`-Tag stylt:
+
    ```css
    body {
        font-family: Arial, sans-serif;
@@ -89,18 +94,15 @@
    }
    ```
 3. Ändere die Hintergrundfarbe, z.B. zu einem hellblauen Farbton:
+
    ```css
    background-color: #add8e6;
    ```
 4. Speichere die Datei.
 5. Lade die Webseite im Browser neu, um die Änderung zu sehen.
+6. Falls alles geklappt hat, dann experimentiere ein wenig herum, und versuche vielleicht sogar noch weitere Sachen hinzufügen.
 
 ---
 
 ### Weiterführende Hilfe:
-Falls du nicht weiterkommst oder detaillierte Erklärungen benötigst, öffne das genauere Tutorial: [Tutorial (genauer)](./Tutorial%20(genauer).md).
-```
-
----
-
-Dieses Tutorial erklärt, wie du das Git-Repository mit SSH klonst, grundlegende Änderungen am HTML vornimmst und das CSS anpasst. Passt das so für dich?
+Falls du nicht weiterkommst oder detaillierte Erklärungen benötigst, öffne das genauere Tutorial: [Tutorial (genauer)](/Tutorial%20(genauer).md).
