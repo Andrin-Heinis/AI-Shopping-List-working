@@ -57,7 +57,8 @@ Dieses Tutorial führt dich Schritt für Schritt durch das Projekt „Einkaufsli
    - Klicke oben im Menü von Visual Studio Code auf **Datei** → **Ordner öffnen**.
    - Navigiere im neuen Fenster zu dem Ordner `AI-Shopping-List`, den du gerade geklont hast, und klicke auf **Ordner auswählen**.
 
-   ![Ordner in VSCode öffnen](./screenshot_7.png) 
+   ![Ordner in VSCode öffnen](./screenshot_7.png)
+   
 
 ---
 
