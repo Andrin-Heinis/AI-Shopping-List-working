@@ -1,26 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kaputte Webseite</title>
-    <link rel="stylesheet" href="/styles.css">
+    <title>AI Shopping List</title>
+    <link rel="stylesheet" href="/Webseite/styles.css">
 </head>
 <body>
-    <h1>Willkommen auf der Webseite</h1>
-    <p>Das hier ist ein Absatz, der nicht richtig gestylt ist.</p>
-    
-    <div>
-        <p>Hier sollte eine Liste erscheinen:</p>
-        <ul>
-            <li>Item 1</li>
-            <li>Item 2</li>
-            <li>Item 3</li>
-        </ul>
-    </div>
+    <h1>AI Shopping List</h1>
+    <input type="text" id="itemInput" placeholder="Artikel hinzufügen">
+    <button onclick="addItem()">Hinzufügen</button>
 
-    <footer>
-        <p>Diese Fusszeile ist nicht korrekt ausgerichtet</p>
-    </footer>
+    <ul id="shoppingList"></ul>
+    <div id="suggestions" style="margin-top: 20px;"></div>
+
+    <script src="/Webseite/app.js"></script>
 </body>
 </html>
