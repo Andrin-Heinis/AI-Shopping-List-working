@@ -65,3 +65,4 @@ function showSuggestions(itemText) {
 }
 
 window.onload = loadSuggestions;
+
