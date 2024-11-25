@@ -21,4 +21,4 @@ Das [README](/README.md) ist das ReadMe File, da befindest du dich gerade darin.
 
 Gut, nun weisst du was in dem Projekt ist, jetzt kannst du schon loslegen mit programmieren :) Ich wünsche dir viel Spass dabei!
 
-Falls du Fragen hast kannst du jederzeit auf **Manuel** (der ohne Brille) oder **Andrin** (der mit Brille) zukommen.
+Falls du Fragen hast kannst du jederzeit auf **Manuel** (der ohne Brille) oder **Andrin** (der mit Brille) zukommen.# AI-Shopping-List-working
