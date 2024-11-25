@@ -6,7 +6,6 @@ async function loadApiKey() {
         const text = await response.text();
         const lines = text.split('\n');
 
-        // Extrahiere den API-Key
         lines.forEach(line => {
             if (line.startsWith('API_KEY=')) {
                 apiKey = line.split('=')[1].trim();
@@ -28,10 +27,10 @@ async function fetchAiSuggestions(product) {
 
     const url = 'https://api.openai.com/v1/chat/completions';
     const body = {
-        model: "gpt-3.5-turbo",
+        model: "gpt-4o-mini",
         messages: [
             { role: "system", content: "You are a helpful assistant." },
-            { role: "user", content: `Empfehle drei passende Produkte für "${product}".` }
+            { role: "user", content: `Gib drei verschiedene essbare Produkte, die gut zu "${product}" passen. Nur kurze Begriffe wie "Tomate, Öl, Salz".` }
         ],
         max_tokens: 50
     };
@@ -51,49 +50,19 @@ async function fetchAiSuggestions(product) {
         }
 
         const data = await response.json();
-        console.log("API-Antwort:", data);
+        console.log("AI-Antwort:", data);
 
-        return data.choices[0].message.content.trim().split("\n");
+        const suggestions = data.choices[0].message.content.trim().split("\n");
+        return suggestions.map(s => s.trim());
     } catch (error) {
         console.error("Fehler bei der Anfrage:", error);
         return ["Fehler bei der Empfehlung."];
     }
 }
 
-async function showSuggestions(itemText) {
-    const suggestionsDiv = document.getElementById("suggestions");
-    suggestionsDiv.innerHTML = "";
-
-    const suggestions = await fetchAiSuggestions(itemText);
-
-    if (suggestions.length > 0 && suggestions[0] !== "Fehler bei der Empfehlung.") {
-        suggestions.forEach(suggestion => {
-            const button = document.createElement("button");
-            button.textContent = suggestion;
-            button.onclick = () => {
-                addListItem(suggestion);
-                showSuggestions(suggestion);
-            };
-            suggestionsDiv.appendChild(button);
-        });
-    } else {
-        const noSuggestion = document.createElement("p");
-        noSuggestion.textContent = "Keine Empfehlungen verfügbar";
-        suggestionsDiv.appendChild(noSuggestion);
-    }
-}
-
-function addItem() {
-    const itemInput = document.getElementById("itemInput");
-    const itemText = itemInput.value.trim();
-    if (itemText !== "") {
-        addListItem(itemText);
-        showSuggestions(itemText); // Vorschläge für das aktuelle Produkt anzeigen
-        itemInput.value = "";
-    }
-}
-
 function addListItem(itemText) {
+    const shoppingList = document.getElementById("shoppingList");
+
     const listItem = document.createElement("li");
 
     const itemSpan = document.createElement("span");
@@ -121,12 +90,51 @@ function addListItem(itemText) {
     removeButton.onclick = () => listItem.remove();
     listItem.appendChild(removeButton);
 
-    document.getElementById("shoppingList").appendChild(listItem);
+    shoppingList.appendChild(listItem);
+}
 
-    showSuggestions(itemText);
+async function showSuggestions(itemText) {
+    const suggestionsDiv = document.getElementById("suggestions");
+    suggestionsDiv.innerHTML = "";
+
+    const suggestions = await fetchAiSuggestions(itemText);
+
+    if (suggestions.length > 0 && suggestions[0] !== "Fehler bei der Empfehlung.") {
+        const cleanSuggestions = suggestions
+            .join(", ")
+            .split(",")
+            .map(suggestion => 
+                suggestion
+                    .trim()
+                    .replace(/^\d+\.\s*/, "")
+                    .replace(/\.$/, "")
+            );
+
+        cleanSuggestions.forEach(suggestion => {
+            const button = document.createElement("button");
+            button.textContent = suggestion;
+            button.onclick = () => addListItem(suggestion);
+            suggestionsDiv.appendChild(button);
+        });
+    } else {
+        const noSuggestion = document.createElement("p");
+        noSuggestion.textContent = "Keine Empfehlungen verfügbar";
+        suggestionsDiv.appendChild(noSuggestion);
+    }
+}
+
+
+function addItem() {
+    const itemInput = document.getElementById("itemInput");
+    const itemText = itemInput.value.trim();
+    if (itemText !== "") {
+        addListItem(itemText);
+        showSuggestions(itemText);
+        itemInput.value = "";
+    }
 }
 
 window.onload = async () => {
-    await loadApiKey(); // API-Key wird beim Laden der Seite geladen
+    await loadApiKey();
     console.log("App gestartet.");
 };
