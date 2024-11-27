@@ -1,45 +1,62 @@
-async function fetchAiSuggestionsFromJson(product) {
+let apiKey = '';
+
+async function loadApiKey() {
     try {
-        const response = await fetch('/ignore/suggestions.json');
-        if (!response.ok) {
-            throw new Error("Fehler beim Laden der JSON-Datei: " + response.status);
-        }
+        const response = await fetch('/ignore/key.env');
+        const text = await response.text();
+        const lines = text.split('\n');
 
-        const data = await response.json();
+        lines.forEach(line => {
+            if (line.startsWith('API_KEY=')) {
+                apiKey = line.split('=')[1].trim();
+            }
+        });
 
-        if (!data[product]) {
-            console.warn(`Keine Vorschläge für das Produkt "${product}" gefunden.`);
-            return ["Keine Vorschläge verfügbar"];
-        }
-
-        return data[product];
+        console.log("API-Key geladen:", apiKey);
     } catch (error) {
-        console.error("Fehler beim Abrufen der Vorschläge aus der JSON-Datei:", error);
-        return ["Fehler bei der Empfehlung."];
+        console.error("Fehler beim Laden der API-Key-Datei:", error);
     }
 }
 
-async function showSuggestions(itemText) {
-    const suggestionsDiv = document.getElementById("suggestions");
-    suggestionsDiv.innerHTML = "";
+async function fetchAiSuggestions(product) {
+    if (!apiKey) {
+        alert("API-Key nicht geladen. Bitte sicherstellen, dass die key.env-Datei verfügbar ist.");
+        console.error("API-Key fehlt.");
+        return ["Fehler: API-Key fehlt"];
+    }
 
-    const suggestions = await fetchAiSuggestionsFromJson(itemText);
+    const url = 'https://api.openai.com/v1/chat/completions';
+    const body = {
+        model: "gpt-4o-mini",
+        messages: [
+            { role: "system", content: "You are a helpful assistant." },
+            { role: "user", content: `Gib drei verschiedene essbare Produkte, die gut zu "${product}" passen. Nur kurze Begriffe wie "Tomate, Öl, Salz".` }
+        ],
+        max_tokens: 50
+    };
 
-    if (suggestions.length > 0 && suggestions[0] !== "Keine Vorschläge verfügbar") {
-        const cleanSuggestions = suggestions.map(suggestion =>
-            suggestion.trim().replace(/^\d+\.\s*/, "").replace(/\.$/, "")
-        );
-
-        cleanSuggestions.forEach(suggestion => {
-            const button = document.createElement("button");
-            button.textContent = suggestion;
-            button.onclick = () => addListItem(suggestion);
-            suggestionsDiv.appendChild(button);
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${apiKey}`
+            },
+            body: JSON.stringify(body)
         });
-    } else {
-        const noSuggestion = document.createElement("p");
-        noSuggestion.textContent = "Keine Empfehlungen verfügbar";
-        suggestionsDiv.appendChild(noSuggestion);
+
+        if (!response.ok) {
+            throw new Error("Fehler beim Abrufen der Vorschläge! Status: " + response.status);
+        }
+
+        const data = await response.json();
+        console.log("AI-Antwort:", data);
+
+        const suggestions = data.choices[0].message.content.trim().split("\n");
+        return suggestions.map(s => s.trim());
+    } catch (error) {
+        console.error("Fehler bei der Anfrage:", error);
+        return ["Fehler bei der Empfehlung."];
     }
 }
 
@@ -76,6 +93,37 @@ function addListItem(itemText) {
     shoppingList.appendChild(listItem);
 }
 
+async function showSuggestions(itemText) {
+    const suggestionsDiv = document.getElementById("suggestions");
+    suggestionsDiv.innerHTML = "";
+
+    const suggestions = await fetchAiSuggestions(itemText);
+
+    if (suggestions.length > 0 && suggestions[0] !== "Fehler bei der Empfehlung.") {
+        const cleanSuggestions = suggestions
+            .join(", ")
+            .split(",")
+            .map(suggestion => 
+                suggestion
+                    .trim()
+                    .replace(/^\d+\.\s*/, "")
+                    .replace(/\.$/, "")
+            );
+
+        cleanSuggestions.forEach(suggestion => {
+            const button = document.createElement("button");
+            button.textContent = suggestion;
+            button.onclick = () => addListItem(suggestion);
+            suggestionsDiv.appendChild(button);
+        });
+    } else {
+        const noSuggestion = document.createElement("p");
+        noSuggestion.textContent = "Keine Empfehlungen verfügbar";
+        suggestionsDiv.appendChild(noSuggestion);
+    }
+}
+
+
 function addItem() {
     const itemInput = document.getElementById("itemInput");
     const itemText = itemInput.value.trim();
@@ -86,7 +134,7 @@ function addItem() {
     }
 }
 
-window.onload = () => {
+window.onload = async () => {
+    await loadApiKey();
     console.log("App gestartet.");
 };
-
