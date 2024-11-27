@@ -89,3 +89,4 @@ function addItem() {
 window.onload = () => {
     console.log("App gestartet.");
 };
+
