@@ -1,20 +1,27 @@
-async function fetchAiSuggestionsFromJson(product) {
+async function fetchAiSuggestionsFromApi(product) {
+    const OPENAI_API_KEY = "API-KEY"; //ENTER YOUR API KEY IN HERE
     try {
-        const response = await fetch('/ignore/suggestions.json');
-        if (!response.ok) {
-            throw new Error("Fehler beim Laden der JSON-Datei: " + response.status);
-        }
+        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${OPENAI_API_KEY}`
+            },
+            body: JSON.stringify({
+                model: "gpt-3.5-turbo",
+                messages: [
+                    { role: "system", content: "Du bist ein Einkaufsassistent. Gib nur drei kurze Alternativen im Stichwortstil, getrennt mit Komma." },
+                    { role: "user", content: `Was sind gute Alternativen oder Ergänzungen für ${product}?` }
+                ],
+                temperature: 0.7
+            })
+        });
 
         const data = await response.json();
-
-        if (!data[product]) {
-            console.warn(`Keine Vorschläge für das Produkt "${product}" gefunden.`);
-            return ["Keine Vorschläge verfügbar"];
-        }
-
-        return data[product];
+        const reply = data.choices?.[0]?.message?.content || "Keine Vorschläge gefunden.";
+        return reply.split("\n").filter(line => line.trim() !== "");
     } catch (error) {
-        console.error("Fehler beim Abrufen der Vorschläge aus der JSON-Datei:", error);
+        console.error("Fehler bei API-Vorschlägen:", error);
         return ["Fehler bei der Empfehlung."];
     }
 }
@@ -23,24 +30,20 @@ async function showSuggestions(itemText) {
     const suggestionsDiv = document.getElementById("suggestions");
     suggestionsDiv.innerHTML = "";
 
-    const suggestions = await fetchAiSuggestionsFromJson(itemText);
+    const suggestions = await fetchAiSuggestionsFromApi(itemText);
 
-    if (suggestions.length > 0 && suggestions[0] !== "Keine Vorschläge verfügbar") {
-        const cleanSuggestions = suggestions.map(suggestion =>
-            suggestion.trim().replace(/^\d+\.\s*/, "").replace(/\.$/, "")
-        );
-
-        cleanSuggestions.forEach(suggestion => {
-            const button = document.createElement("button");
-            button.textContent = suggestion;
-            button.onclick = () => addListItem(suggestion);
-            suggestionsDiv.appendChild(button);
+    suggestions.forEach(raw => {
+        const parts = raw.split(",");
+        parts.forEach(part => {
+            const suggestion = part.trim();
+            if (suggestion) {
+                const button = document.createElement("button");
+                button.textContent = suggestion;
+                button.onclick = () => addListItem(suggestion);
+                suggestionsDiv.appendChild(button);
+            }
         });
-    } else {
-        const noSuggestion = document.createElement("p");
-        noSuggestion.textContent = "Keine Empfehlungen verfügbar";
-        suggestionsDiv.appendChild(noSuggestion);
-    }
+    });
 }
 
 function addListItem(itemText) {

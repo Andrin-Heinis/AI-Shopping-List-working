@@ -13,6 +13,7 @@ h1 {
     color: #444;
     font-size: 2.5rem;
     margin-bottom: 20px;
+    text-align: center;
 }
 
 #itemInput {
@@ -30,7 +31,7 @@ button {
     margin: 5px;
     font-size: 16px;
     color: #fff;
-    background-color: #007bff;
+    background-color: #0066cc;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -40,6 +41,11 @@ button {
 
 button:hover {
     background-color: #0056b3;
+}
+
+button:active {
+    transform: scale(0.95);
+    background-color: #004080;
 }
 
 ul {
@@ -61,6 +67,10 @@ li {
     justify-content: space-between;
 }
 
+li:hover {
+    background-color: #f0f0f0;
+}
+
 li span {
     flex-grow: 1;
     padding-left: 10px;
@@ -69,7 +79,7 @@ li span {
 
 .checked {
     text-decoration: line-through;
-    color: #888;
+    color: #555;
 }
 
 li button {
@@ -89,4 +99,15 @@ li button:hover {
 
 li button.checkButton:hover {
     background-color: #42a445;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    background-color: transparent;
+    color: #777;
 }
